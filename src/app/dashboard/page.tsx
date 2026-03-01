@@ -115,7 +115,7 @@ export default function DashboardPage() {
     const [aiApiKey, setAiApiKey] = useState("");
     const [aiModelId, setAiModelId] = useState("");
     const [aiTesting, setAiTesting] = useState(false);
-    const [aiTestResult, setAiTestResult] = useState<{ success: boolean; message?: string; error?: string; details?: Record<string, unknown> } | null>(null);
+    const [aiTestResult, setAiTestResult] = useState<{ success: boolean; message?: string; error?: string; details?: { models?: string[]; response?: string; model?: string } } | null>(null);
     const [currentJobId, setCurrentJobId] = useState<string | null>(null);
     const [jobStatus, setJobStatus] = useState<Job | null>(null);
     const [jobRunning, setJobRunning] = useState(false);
@@ -1032,8 +1032,8 @@ export default function DashboardPage() {
                                                 <span style={{ fontWeight: 500 }}>{aiTestResult.success ? "Connection successful!" : "Connection failed"}</span>
                                             </div>
                                             {aiTestResult.error && <div style={{ fontSize: 12, marginTop: 4, color: "#f85149", opacity: 0.8 }}>{aiTestResult.error}</div>}
-                                            {aiTestResult.details && (aiTestResult.details as Record<string, unknown>).models && (() => {
-                                                const models = (aiTestResult.details as Record<string, unknown>).models as string[];
+                                            {aiTestResult.details?.models && (() => {
+                                                const models = aiTestResult.details.models;
                                                 return (
                                                     <div style={{ fontSize: 12, color: "#8b8b9e", marginTop: 4 }}>
                                                         Available models: {models.slice(0, 5).join(", ")}
@@ -1041,14 +1041,11 @@ export default function DashboardPage() {
                                                     </div>
                                                 );
                                             })()}
-                                            {aiTestResult.details && (aiTestResult.details as Record<string, unknown>).response && (() => {
-                                                const det = aiTestResult.details as Record<string, unknown>;
-                                                return (
-                                                    <div style={{ fontSize: 12, color: "#8b8b9e", marginTop: 4 }}>
-                                                        Model: {String(det.model)} — Response: &quot;{String(det.response)}&quot;
-                                                    </div>
-                                                );
-                                            })()}
+                                            {aiTestResult.details?.response && (
+                                                <div style={{ fontSize: 12, color: "#8b8b9e", marginTop: 4 }}>
+                                                    Model: {aiTestResult.details.model} — Response: &quot;{aiTestResult.details.response}&quot;
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
