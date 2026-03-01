@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String   @id @default(cuid())
+  githubId       Int      @unique
+  login          String
+  avatarUrl      String?
+  accessToken    String
+  installationId Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  jobs           Job[]
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  repo        String
+  branch      String?
+  status      String    @default("pending") // pending, running, completed, failed
+  progress    Int       @default(0)
+  totalSteps  Int       @default(0)
+  config      Json
+  dryRun      Boolean   @default(false)
+  prUrl       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+  logs        JobLog[]
+}
+
+model JobLog {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  level     String   @default("info") // info, warn, error, success
+  message   String
+  createdAt DateTime @default(now())
+}
