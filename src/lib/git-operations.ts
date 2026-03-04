@@ -27,6 +27,7 @@ export interface BackdateConfig {
     aiConfig?: AIConfig;
     authorName?: string;
     authorEmail?: string;
+    branchName?: string;
 }
 
 export type LogCallback = (level: string, message: string) => void;
@@ -69,7 +70,7 @@ export async function executeBackdateJob(
     onProgress: (current: number, total: number) => void
 ): Promise<BackdateResult> {
     const tmpDir = path.join(os.tmpdir(), `git-recovery-${uuidv4()}`);
-    const branchName = `${BRANCH_PREFIX}/${Date.now()}`;
+    const branchName = config.branchName?.trim() || `${BRANCH_PREFIX}/${Date.now()}`;
     let totalCommits = 0;
 
     // Helper: pick random intensity from weights
@@ -148,7 +149,15 @@ export async function executeBackdateJob(
 
         // Re-initialize git in the cloned dir and detect actual default branch
         const repoGit: SimpleGit = simpleGit(tmpDir);
-        const actualDefault = (await repoGit.revparse(["--abbrev-ref", "HEAD"])).trim() || config.defaultBranch;
+        let actualDefault = config.defaultBranch;
+        let isEmptyRepo = false;
+        try {
+            actualDefault = (await repoGit.revparse(["--abbrev-ref", "HEAD"])).trim() || config.defaultBranch;
+        } catch {
+            // Empty repo — HEAD doesn't exist yet
+            isEmptyRepo = true;
+            log("info", "📭 Repository is empty (no commits yet)");
+        }
         log("success", `✅ Repository cloned successfully (branch: ${actualDefault})`);
 
         // Set git user
@@ -159,7 +168,12 @@ export async function executeBackdateJob(
 
         // Step 3: Create branch
         log("info", `🌿 Creating branch: ${branchName}`);
-        await repoGit.checkoutLocalBranch(branchName);
+        if (isEmptyRepo) {
+            // For empty repos, use --orphan since there's no commit to branch from
+            await repoGit.checkout(["--orphan", branchName]);
+        } else {
+            await repoGit.checkoutLocalBranch(branchName);
+        }
 
         // Step 4: Create commits
         const filePath = path.join(tmpDir, config.targetFile);

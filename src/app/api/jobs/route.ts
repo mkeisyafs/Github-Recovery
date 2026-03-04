@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
             aiBaseUrl,
             aiApiKey,
             aiModelId,
+            branchName,
         } = body;
 
         // Validate
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
             aiConfig: useAI && aiBaseUrl && aiApiKey ? { baseUrl: aiBaseUrl, apiKey: aiApiKey, modelId: aiModelId || undefined } : undefined,
             authorName: user?.login,
             authorEmail: `${user?.githubId}+${user?.login}@users.noreply.github.com`,
+            branchName: branchName || undefined,
         };
 
         // Create job in DB

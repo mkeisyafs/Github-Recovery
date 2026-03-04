@@ -110,6 +110,7 @@ export default function DashboardPage() {
     );
     const [createPR, setCreatePR] = useState(true);
     const [dryRun, setDryRun] = useState(false);
+    const [customBranchName, setCustomBranchName] = useState("");
     const [useAI, setUseAI] = useState(false);
     const [aiBaseUrl, setAiBaseUrl] = useState("");
     const [aiApiKey, setAiApiKey] = useState("");
@@ -229,6 +230,7 @@ export default function DashboardPage() {
                     artIntensities: intensityMode === "art" ? artIntensities : undefined,
                     aiBaseUrl: useAI ? aiBaseUrl : undefined, aiApiKey: useAI ? aiApiKey : undefined,
                     aiModelId: useAI && aiModelId ? aiModelId : undefined,
+                    branchName: customBranchName.trim() || undefined,
                 }),
             });
             const data = await res.json();
@@ -443,14 +445,29 @@ export default function DashboardPage() {
                                 )}
                             </div>
                             {selectedRepo && (
-                                <div style={{
-                                    marginTop: 12, display: "flex", alignItems: "center", gap: 8,
-                                    padding: "8px 12px", borderRadius: 10, background: "rgba(57,211,83,0.15)",
-                                }}>
-                                    <CheckCircle2 style={{ width: 16, height: 16, color: "#39d353" }} />
-                                    <span style={{ fontSize: 14, color: "#39d353" }}>{selectedRepo.full_name}</span>
-                                    <span style={{ fontSize: 12, color: "#55556a", marginLeft: "auto" }}>branch: {selectedRepo.default_branch}</span>
-                                </div>
+                                <>
+                                    <div style={{
+                                        marginTop: 12, display: "flex", alignItems: "center", gap: 8,
+                                        padding: "8px 12px", borderRadius: 10, background: "rgba(57,211,83,0.15)",
+                                    }}>
+                                        <CheckCircle2 style={{ width: 16, height: 16, color: "#39d353" }} />
+                                        <span style={{ fontSize: 14, color: "#39d353" }}>{selectedRepo.full_name}</span>
+                                        <span style={{ fontSize: 12, color: "#55556a", marginLeft: "auto" }}>branch: {selectedRepo.default_branch}</span>
+                                    </div>
+                                    <div style={{ marginTop: 12 }}>
+                                        <label style={{ fontSize: 12, color: "#55556a", display: "block", marginBottom: 6 }}>
+                                            <GitBranch style={{ width: 12, height: 12, display: "inline", verticalAlign: "middle", marginRight: 4 }} />
+                                            Branch Name <span style={{ color: "#55556a" }}>(optional)</span>
+                                        </label>
+                                        <input type="text" value={customBranchName} onChange={(e) => setCustomBranchName(e.target.value)}
+                                            placeholder={`backfill/${Date.now()} (auto-generated)`}
+                                            style={{ fontFamily: "monospace", fontSize: 13 }}
+                                        />
+                                        <span style={{ fontSize: 11, color: "#55556a", display: "block", marginTop: 4 }}>
+                                            Leave empty for auto-generated name
+                                        </span>
+                                    </div>
+                                </>
                             )}
                         </section>
 
