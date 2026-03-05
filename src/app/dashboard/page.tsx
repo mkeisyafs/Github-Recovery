@@ -766,14 +766,14 @@ export default function DashboardPage() {
 
                                                 {/* Live preview grid */}
                                                 <div style={{ marginTop: 12, display: "flex", gap: 0 }}>
-                                                    <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 6 }}>
-                                                        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                                                            <span key={i} style={{ fontSize: 8, color: "#55556a", height: 11, lineHeight: "11px", textAlign: "right", width: 12 }}>{d}</span>
+                                                    <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 4 }}>
+                                                        {["", "M", "", "W", "", "F", ""].map((d, i) => (
+                                                            <span key={i} style={{ fontSize: 8, color: "#8b949e", height: 10, lineHeight: "10px", textAlign: "right", width: 12 }}>{d}</span>
                                                         ))}
                                                     </div>
                                                     <div style={{
-                                                        display: "grid", gridTemplateRows: "repeat(7, 11px)",
-                                                        gridAutoFlow: "column", gap: 2,
+                                                        display: "grid", gridTemplateRows: "repeat(7, 10px)",
+                                                        gridAutoFlow: "column", gap: 3,
                                                     }}>
                                                         {cells.map((cell) => {
                                                             const level = cell.inRange ? (imagePreview[cell.date] ?? 0) : -1;
@@ -781,7 +781,7 @@ export default function DashboardPage() {
                                                                 <div key={cell.date}
                                                                     className={level >= 0 ? `contrib-${level}` : ""}
                                                                     style={{
-                                                                        width: 11, height: 11, borderRadius: 2,
+                                                                        width: 10, height: 10, borderRadius: 2,
                                                                         opacity: cell.inRange ? 1 : 0.15,
                                                                         backgroundColor: level < 0 ? "#161b22" : undefined,
                                                                     }}
@@ -894,22 +894,22 @@ export default function DashboardPage() {
                                             onMouseLeave={() => setIsPainting(false)}
                                         >
                                             {/* Month labels */}
-                                            <div style={{ display: "flex", marginLeft: 32, marginBottom: 4, gap: 0 }}>
+                                            <div style={{ display: "flex", marginLeft: 30, marginBottom: 2, position: "relative", height: 15 }}>
                                                 {monthLabels.map((ml, i) => (
                                                     <span key={i} style={{
-                                                        fontSize: 10, color: "#55556a",
-                                                        position: "relative", left: ml.col * 16,
+                                                        fontSize: 10, color: "#8b949e",
+                                                        position: "absolute", left: ml.col * 13,
                                                         whiteSpace: "nowrap",
                                                     }}>{ml.label}</span>
                                                 ))}
                                             </div>
 
                                             <div style={{ display: "flex", gap: 0 }}>
-                                                {/* Day labels */}
-                                                <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 6, paddingTop: 0 }}>
-                                                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d, i) => (
-                                                        <span key={i} style={{ fontSize: 9, color: "#55556a", height: 13, lineHeight: "13px", textAlign: "right", width: 24 }}>
-                                                            {i % 2 === 1 ? d : ""}
+                                                {/* Day labels — GitHub only shows Mon, Wed, Fri */}
+                                                <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 4, paddingTop: 0 }}>
+                                                    {["", "Mon", "", "Wed", "", "Fri", ""].map((d, i) => (
+                                                        <span key={i} style={{ fontSize: 9, color: "#8b949e", height: 10, lineHeight: "10px", textAlign: "right", width: 24 }}>
+                                                            {d}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -917,7 +917,7 @@ export default function DashboardPage() {
                                                 {/* Grid */}
                                                 <div style={{
                                                     display: "grid",
-                                                    gridTemplateRows: "repeat(7, 13px)",
+                                                    gridTemplateRows: "repeat(7, 10px)",
                                                     gridAutoFlow: "column",
                                                     gap: 3,
                                                     userSelect: "none",
@@ -938,7 +938,7 @@ export default function DashboardPage() {
                                                                 title={cell.inRange ? `${cell.date}: Level ${level} (${INTENSITY_LABELS[level]?.commits ?? 0}/day)` : cell.date}
                                                                 className={level >= 0 ? `contrib-${level}` : ""}
                                                                 style={{
-                                                                    width: 13, height: 13, borderRadius: 2,
+                                                                    width: 10, height: 10, borderRadius: 2,
                                                                     cursor: cell.inRange ? "pointer" : "default",
                                                                     opacity: cell.inRange ? 1 : 0.15,
                                                                     backgroundColor: level < 0 ? "#161b22" : undefined,
@@ -952,12 +952,12 @@ export default function DashboardPage() {
                                         </div>
 
                                         {/* Legend */}
-                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12, fontSize: 12, color: "#55556a" }}>
+                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8, fontSize: 11, color: "#8b949e" }}>
                                             <span>{Object.values(artIntensities).filter(v => v > 0).length} of {artDates.length} days painted</span>
-                                            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
                                                 <span>Less</span>
                                                 {INTENSITY_LABELS.map((item) => (
-                                                    <div key={item.level} className={`contrib-${item.level}`} style={{ width: 12, height: 12, borderRadius: 2 }} />
+                                                    <div key={item.level} className={`contrib-${item.level}`} style={{ width: 10, height: 10, borderRadius: 2 }} />
                                                 ))}
                                                 <span>More</span>
                                             </div>
